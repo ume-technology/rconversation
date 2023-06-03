@@ -19,7 +19,7 @@ pipeline:
     use_word_boundaries: False # 配置了 lookup table 时使用
 
   - name: ResponseSelector  # 分类 FAQ intents
-    epochs: 200
+    epochs: 200  # 100
     retrieval_intent: faq
 
   #- name: DIETClassifier   # 支持正则特征：做意图分类与实体识别
@@ -28,7 +28,7 @@ pipeline:
     #model_confidence: softmax
 
   - name: DIETClassifier
-    epochs: 1000
+    epochs: 1000  # 100
     learning_rate: 0.01
     embedding_dimension: 256
     connection_density: 0.3
@@ -121,5 +121,5 @@ policies:
     check_for_contradictions: true
   - name: TEDPolicy
     max_history: 5
-    epochs: 200
+    epochs: 200 # 100
     constrain_similarities: true
