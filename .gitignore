@@ -1,0 +1,6 @@
+*.tar.gz
+.rasa
+.idea
+*.pyc
+*.log
+apikeys.py

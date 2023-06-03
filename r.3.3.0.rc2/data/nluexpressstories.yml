@@ -1,0 +1,69 @@
+version: "3.1"
+
+rules:
+  - rule: ask express with code
+    steps:
+      - intent: intent_express
+      - action: action_slot_codes_setter
+      - slot_was_set:
+          - havecode: True
+      - action: action_select_by_code
+
+  - rule: ask express without code
+    steps:
+      - intent: intent_express
+      - action: action_slot_codes_setter
+      - slot_was_set:
+          - havecode: False
+      - action: ask_codes_form
+      - active_loop: ask_codes_form
+  - rule: submit code for express
+    condition:
+      - active_loop: ask_codes_form
+    steps:
+      - action: ask_codes_form
+      - active_loop: null
+      - slot_was_set:
+          - requested_slot: null
+      - action: action_select_by_code
+
+
+
+#stories:
+#  - story: do intent_express with code
+#    steps:
+#      - intent: intent_express
+#      - action: action_slot_codes_setter
+#      - slot_was_set:
+#          - havecode: True
+#      - action: action_select_by_code
+#
+#
+#  - story: do intent_express without code happy path
+#    steps:
+#      - intent: intent_express
+#      - action: action_slot_codes_setter
+#      - slot_was_set:
+#          - havecode: False
+#      - action: ask_codes_form
+#      - active_loop: ask_codes_form
+#      - active_loop: null
+#      - action: action_select_by_code
+#      - or:
+#          - intent: intent_express
+#          - intent: intent_queorders
+#      - action: action_fasterexpress   # utter_fastexpress
+#
+#
+#  - story: do intent_express without code unhappy path
+#    steps:
+#      - intent: intent_express
+#      - action: action_slot_codes_setter
+#      - slot_was_set:
+#          - havecode: False
+#      - action: ask_codes_form
+#      - active_loop: ask_codes_form
+#      - intent: greet
+#      - action: action_say_hello # utter_greet
+#      - action: action_deactivate_loop
+#      - active_loop: null

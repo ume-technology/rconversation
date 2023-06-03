@@ -1,0 +1,37 @@
+version: "3.1"
+
+rules:
+  - rule: say halo to user   do greet
+    steps:
+      - intent: greet
+      - action: action_say_hello   # action_say_hello    utter_greet
+
+  - rule: Say goodbye anytime the user says goodbye
+    steps:
+      - intent: goodbye
+      - action: action_say_bye  # utter_goodbye
+
+  - rule: do fallback unknow intent and unknow what to do
+    steps:
+      - intent: nlu_fallback
+      - action: action_response_intent_outofscope  # action_default_fallback   or  action_response_intent_outofscope
+
+  - rule: do intent_other_outofscope
+    steps:
+      - intent: intent_other_outofscope
+      - action: action_response_intent_outofscope
+
+  - rule: to human
+    steps:
+      - intent: intent_human
+      - action: action_tohuman
+
+  - rule: do intent_repeace
+    steps:
+      - intent: intent_repeace
+      - action: action_repeace #  utter_repeace
+
+  - rule: utter  faq
+    steps:
+      - intent: faq
+      - action: utter_faq

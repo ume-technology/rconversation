@@ -1,0 +1,17 @@
+version: "3.1"
+
+
+stories:
+
+  # start  -------------# start  -------------# start  -------------# start  -------------
+  - story: do intent_doorder
+    steps:
+      - intent: intent_doorder
+      - action: action_doorder # utter_doorder
+
+
+  # start  -------------# start  -------------# start  -------------# start  -------------
+  - story: do intent helporder     # wait 需要帮忙下单的时候可以做到什么
+    steps:
+      - intent: intent_helporder
+      - action: action_tohuman    # utter_helporder

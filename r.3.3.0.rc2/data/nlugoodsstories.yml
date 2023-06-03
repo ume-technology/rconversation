@@ -1,0 +1,146 @@
+version: "3.1"
+
+
+#rules:
+#  - rule: 用户正常提供 QUEGoods 信息
+#    steps:
+#      - intent: intent_quegoods
+#      - action: action_slot_setter_have_quegoods  # 这个action本质上时一个check quegoods slot 是否被有效填充；设置入槽的记号判定
+#      - slot_was_set:
+#          - havegoods: True
+#      - action: action_select_que_goods_infobox
+#      #- action: action_empty_have_que_slot # reset slots
+#
+#  - rule: user not give goods and ask goods info ACTIVE form # wait WITHOUT goods info  to valid set slot 【用户没有提供了goods信息的情况下进行商品询问】
+#    steps:
+#      - intent: intent_quegoods
+#      - action: action_slot_setter_have_quegoods
+#      - slot_was_set:
+#          - havegoods: False
+#      - action: ask_quegoods_form
+#      - active_loop: ask_quegoods_form
+#  - rule: user not give goods and ask goods info SUBMIT form
+#    condition:
+#      - active_loop: ask_quegoods_form
+#    steps:
+#      - action: ask_quegoods_form
+#      - active_loop: null
+#      - slot_was_set:
+#          - requested_slot: null # 停止请求任何 slot 信息
+#      - action: action_select_que_goods_infobox  # The action we want to run when the form is submitted.
+#      #- action: action_empty_have_que_slot # reset slots
+#
+#  - rule: ask for discount
+#    steps:
+#      - intent: intent_disount
+#      - action: utter_discount
+#
+#  - rule: ask goods price
+#    steps:
+#      - intent: intent_askgoodsprice
+#      - action: action_select_que_goods_infobox #  一开始用的是这个 action action_make_orders
+
+
+rules:
+  - rule: directly do order
+    steps:
+      - intent: intent_doorder
+      - action: action_doorder # utter_doorder
+
+  - rule: queorder without metadata
+    steps:
+      - intent: intent_quegoods
+      - slot_was_set: # todo action:  action_session_start
+          - haveInfoBox: False
+      - action: action_tohuman  # wait 由于没有探测到相关的 metadata 信息，故转人工
+
+  - rule: queorder quegoods or price without metadata
+    steps:
+      - intent: intent_quegoods
+      - slot_was_set: # todo action:  action_session_start
+          - haveInfoBox: False
+      - action: action_tohuman  # wait 由于没有探测到相关的 metadata 信息，故转人工
+
+  - rule: queorder quegoods or price with metadata
+    steps:
+      - intent: intent_quegoods
+      - slot_was_set: # todo action:  action_session_start
+          - haveInfoBox: True
+      - action: action_goodsInfo_Metadata
+
+
+#  - rule: ask use goods with metadata or goods
+#    steps:
+#      - intent: intent_usegoods
+#      - action: action_slot_setter_have_usegoods
+#      - or:
+#          - slot_was_set: # todo action:  action_session_start
+#              - haveInfoBox: True
+#          - slot_was_set: # action_slot_setter_have_usegoods  action_slot_setter_have_quegoods
+#              - havegoods: True
+#      - action: action_how_use_goods
+
+  - rule: ask use goods without metadata
+    steps:
+      - intent: intent_usegoods
+      - action: action_tohuman
+
+
+
+
+#stories:
+#  - story: do intent_doorder and intent_quegoods without metadata    # do order and que goods
+#    steps:
+#      - intent: intent_doorder
+#      - action: action_doorder # utter_doorder
+#      - or:
+#          - intent: intent_quegoods
+#          - intent: intent_askgoodsprice
+#      - slot_was_set: # todo action:  action_session_start
+#          - haveInfoBox: False
+#      - action: action_tohuman  # wait 由于没有探测到相关的 metadata 信息，故转人工
+#
+#
+#  - story: do intent_doorder and intent_quegoods with metadata
+#    steps:
+#      - intent: intent_doorder
+#      - action: action_doorder # utter_doorder
+#      - or:
+#          - intent: intent_quegoods
+#          - intent: intent_askgoodsprice
+#      - slot_was_set: # todo action:  action_session_start
+#          - haveInfoBox: True
+#      - action: action_goodsInfo_Metadata
+#      - intent: intent_discount
+#      - action: action_discount # utter_discount
+#
+#
+#  # -------------------------------------# -------------------------------------# -------------------------------------
+#  - story: do intent_usegoods haveInfoBox or havegoods
+#    steps:
+#      - intent: greet
+#      - action: action_say_hello # utter_greet
+#      - intent: intent_usegoods
+#      - action: action_slot_setter_have_usegoods
+#      - or:
+#          - slot_was_set: # todo action:  action_session_start
+#              - haveInfoBox: True
+#          - slot_was_set: # action_slot_setter_have_usegoods  action_slot_setter_have_quegoods
+#              - havegoods: True
+#      - action: action_how_use_goods
+#
+#  - story: do intent_usegoods  noting
+#    steps:
+#      - intent: greet
+#      - action: action_say_hello # utter_greet
+#      - intent: intent_usegoods
+#      - action: action_slot_setter_have_usegoods
+#      - slot_was_set:
+#          - infoBoxGoods: null
+#          - usegoods: null
+#      - action: ask_usegoods_form
+#      - active_loop: ask_usegoods_form
+#      - active_loop: null
+#      - action: action_how_use_goods
+
+

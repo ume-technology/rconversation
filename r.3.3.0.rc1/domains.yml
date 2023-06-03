@@ -1,0 +1,219 @@
+version: "3.1"
+
+intents:
+  - greet
+  - intent_doorder      # do order
+  - intent_quegoods     # ask goods
+  - intent_askgoodsprice
+  - intent_discount
+  - intent_helporder    # help order
+  - intent_usegoods
+  - intent_express
+  - intent_other_outofscope
+  - intent_queorders
+  - intent_repeace
+  - intent_human
+  - goodbye
+  - affirm
+  - deny
+  # ---------------------  # ---------------------  # ---------------------  # ---------------------  # ---------------------
+  - faq
+
+
+entities:
+  - code
+  - goods
+  - name
+  - city
+  - part
+  - street
+
+
+slots:
+  infoBoxGoods:
+    type: any
+    influence_conversation: False
+    mappings:
+      - type: custom
+
+  haveInfoBox:
+    type: bool
+    influence_conversation: True
+    mappings:
+      - type: custom
+
+  havegoods:
+    type: bool
+    influence_conversation: True
+    mappings:
+      - type: custom
+
+  havecode:
+    type: bool
+    influence_conversation: True
+    mappings:
+      - type: custom
+
+  quegoods:
+    type: text
+    influence_conversation: True
+    mappings:
+      - entity: goods
+        type: from_entity
+        condition:
+          - active_loop: ask_quegoods_form
+            requested_slot: quegoods
+
+  usegoods:
+    type: text
+    influence_conversation: True
+    mappings:
+      - entity: goods
+        type: from_entity
+        condition:
+          - active_loop: ask_usegoods_form
+            requested_slot: usegoods
+
+  codes:
+    type: text
+    influence_conversation: True
+    mappings:
+      - entity: code
+        type: from_entity
+        active_loop: ask_codes_form
+        requested_slot: codes
+
+
+
+forms:
+  ask_codes_form:
+    required_slots:
+      - codes
+
+  ask_quegoods_form:
+    required_slots:
+      - quegoods
+
+  ask_usegoods_form:
+    required_slots:
+      - usegoods
+
+actions:
+  # greet  and   bye
+  - action_session_start
+  - action_say_hello
+  - action_say_bye
+  - action_repeace
+  - action_doorder
+  - action_discount
+  - action_ensurecode
+  - action_fasterexpress
+
+  # OOS and fallback and human
+  - action_tohuman
+
+  - action_goodsInfo_Metadata
+
+  # que code action
+  - action_slot_codes_setter
+  - action_select_by_code
+
+  # que goods action
+  - action_slot_setter_have_quegoods
+
+  # - action_empty_have_que_slot
+
+  # use goods action
+  - action_slot_setter_have_usegoods
+  - action_how_use_goods
+
+  # - action_default_fallback
+  - action_response_intent_outofscope
+
+
+responses:
+
+#  utter_greet:
+#    - text: "妳好，請問需要什麽幫助，我可以為您查詢訂單、查詢物流、檢索商品。同時您也可以嚮我咨詢商品使用方法。"
+
+#  utter_repeace:
+#    - text: "很抱歉，我很理解您的心情，因此我已經為您發送您的訂單訊息給相關人員，即刻會有專人幫您處理，請您再給我一些時間，感謝您的理解！"
+
+#  utter_goodbye:
+#    - text: "Bye"
+
+#  utter_doorder:
+#    - text: "你好，您正在关注的商品目前該是最低價，所以您現在購買是非常划算的哦！"
+
+#  utter_discount:
+#    - text: "您好，因為這款產品是折扣價格，您在頁面上看到的價格已是優惠的摺扣價，所以是沒有贈品贈送的喔。"
+
+#  utter_helporder:
+#    - text: "如果客人需要下单帮助的时候，可以做什么，这个暂时不确定应该怎么做？"
+
+#  utter_ensurecode:
+#    - text: "我已经为您提供了您的订单信息。如果您有其它问题，随时欢迎您的来信"
+
+#  utter_fastexpress:
+#    - text: "很抱歉，我很理解您的心情，因此我已經為您發送您的訂單訊息給相關人員，即刻會有專人幫您處理，請您再給我一些時間，感謝您的理解！"
+
+
+  # ---------------------------------------------------------------------------------------------  ask form
+
+  utter_ask_codes:
+    - text: "请告诉我你的电话或订单号，我帮你查询订单信息"
+
+  utter_ask_usegoods:
+    - text: "请告诉我你想知道的商品，我帮你查询其如何使用"
+
+  #  utter_ask_quegoods:
+  #    - text: 抱歉我没有识别到您在咨询什么商品，您可以换种方式以更清晰的形式告诉我您购买的商品。例如：我需要买电视机。
+
+
+  # ------------------------------------------------ utter  FQA
+
+  utter_faq/quality:
+#    - text: {"text":"您好，我们的產品客戶普遍回饋品質很好的喔，品質均是都得到保證的商品，如果您有喜歡的商品，您都可以購買後試用下的。\n
+#            我們的商品支持7天鑒賞期，同時，在您收到貨物之後可以和物流人員溝通，在簽收時開箱驗貨，售後無憂，您可以放心購買！","type":0}
+    - text: "您好，我们的產品客戶普遍回饋品質很好的喔，品質均是都得到保證的商品，如果您有喜歡的商品，您都可以購買後試用下的。\n
+            我們的商品支持7天鑒賞期，同時，在您收到貨物之後可以和物流人員溝通，在簽收時開箱驗貨，售後無憂，您可以放心購買！"
+
+
+  utter_faq/origin:
+#    - text: {"text":"您好，我們的商品來自全世界各優質供應商，產品質量有充分的保證，所以您可以放心購買。","type":0}
+    - text: "您好，我們的商品來自全世界各優質供應商，產品質量有充分的保證，所以您可以放心購買。"
+
+
+  utter_faq/payment:
+#    - text: {"text":"我們目前只支持貨到付款，由新竹物流為您完成配送服務，物流覆蓋全臺地區，除了離島，其他地區都可以派送的。如果您收貨時間存在不便，您不用擔心，\n
+#        首先貨物到達前快遞人員會給您電話聯繫，您可以和快遞員協商送貨時間。同時我們支持7-11店鋪取件，等您有空的時候再去取。\n
+#        在這裏您可以放心高效地獲得優質的購物體驗，期待您能挑選到心儀的商品。","type":0}
+    - text: "我們目前只支持貨到付款，由新竹物流為您完成配送服務，物流覆蓋全臺地區，除了離島，其他地區都可以派送的。如果您收貨時間存在不便，您不用擔心，\n
+        首先貨物到達前快遞人員會給您電話聯繫，您可以和快遞員協商送貨時間。同時我們支持7-11店鋪取件，等您有空的時候再去取。\n
+        在這裏您可以放心高效地獲得優質的購物體驗，期待您能挑選到心儀的商品。"
+
+  utter_faq/receipt:
+#    - text: {"text":"如果您需要收據憑證，您在簽收貨物時可以和送貨員溝通并索要收據。我們的所有商品均具備完善的售後服務和品質保證，支持7天鑒賞期讓您放心購買。\n","type":0}
+    - text: "如果您需要收據憑證，您在簽收貨物時可以和送貨員溝通并索要收據。我們的所有商品均具備完善的售後服務和品質保證，支持7天鑒賞期讓您放心購買。\n"
+
+  utter_faq/store:
+#    - text: {"text":"感謝您對我們產品的喜愛和對客服工作的支持，我們的所有商品和客服均為線上服務，
+#            併未設置線下門店和線下客服。這是因為線上服務方便高效，相信通過我們的在線服務會帶給您最優質的購物體驗。","type":0}
+    - text: "感謝您對我們產品的喜愛和對客服工作的支持，我們的所有商品和客服均為線上服務，
+            併未設置線下門店和線下客服。這是因為線上服務方便高效，相信通過我們的在線服務會帶給您最優質的購物體驗。"
+
+
+# buttons
+#  someactionwithbuttons:
+#    - buttons:
+#        - payload: 確認無誤
+#          title: 我的訂單信息是正確的
+#        - payload: 訂單修正
+#          title: 我需要修正我的訂單信息
+#      text: "請問幫助您查詢到的訂單信息是否正確，如果不正確，您是否需要我幫您修改訂單信息？\n為方便您的操作，您只需要選擇上述選項即可，感謝您的配合。"
+
+
+
+session_config:
+  session_expiration_time: 0   # value in minutes, 0 means infinitely long
+  carry_over_slots_to_new_session: true #  set to false to forget slots between sessions 一个会话session会有多轮对话；当会话过期后，是否继承上一次的会话信息，例如slot信息

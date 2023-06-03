@@ -1,0 +1,110 @@
+#version: "3.0"
+version: "3.1"
+
+rules:
+  - rule: active name form
+    steps:
+      - intent: intent_queorders
+      - action: utter_make_sure
+      - action: action_start_listen
+      - action: action_make_sure_yes_or_no
+      - slot_was_set:
+          - makesure: True
+      - action: ask_name_form
+      - active_loop: ask_name_form
+  - rule: submit name form
+    condition:
+      - active_loop: ask_name_form
+    steps:
+      - action: ask_name_form
+      - active_loop: null
+      - slot_was_set:
+          - requested_slot: null # 停止请求任何 slot 信息
+      - action: utter_thx
+
+  - rule: no form path
+    steps:
+      - intent: intent_queorders
+      - action: utter_make_sure
+      - action: action_start_listen
+      - action: action_make_sure_yes_or_no
+      - slot_was_set:
+          - makesure: False
+      - action: utter_end
+
+
+nlu:
+  - intent: intent_queorders
+    examples: |
+      - 核查訂單
+      - 核查订单
+      - 核对订单
+      - 请给我货号
+      - 有查询到吗
+      - 核查订单信息
+      - 能给我货号吗
+      - 我的订单信息
+      - 麻烦帮我查询一下订购有成功吗
+      - 我想请问一下为什么没有看到我的订单
+      - 帮我确认我的订单信息
+      - 核查确认我的订单
+      - 你好我需要确认订单
+      - 小编你好帮我核查订单
+      - 你好我的订单有查到吗
+      - 请问如何确认是否下单成功
+      - 请问是否查询到了我的订单
+      - 你能不能帮我查询一下我的订单
+
+  - intent: greet
+    examples: |
+      - hey
+      - hello
+      - hi
+      - hello there
+      - good morning
+      - good evening
+      - good afternoon
+      - moin
+      - hey there
+      - let's go
+      - hey dude
+      - goodmorning
+      - goodevening
+      - goodafternoon
+      - halo
+      - 嗨
+      - goodmorning
+      - goodevening
+      - goodafternoon
+      - 关注
+      - 您好
+      - 你好
+      - 早安
+      - 平安
+      - 午安
+      - 哈喽
+      - 客服你好
+      - 小编你好
+      - 你好请问一下
+      - Giikin客服你好
+      - Giikin小编你好
+
+
+  - intent: affirm
+    examples: |
+      - yes
+      - y
+      - indeed
+      - of course
+      - that sounds good
+      - correct
+
+  - intent: deny
+    examples: |
+      - no
+      - n
+      - never
+      - I don't think so
+      - don't like that
+      - no way
+      - not really

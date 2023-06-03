@@ -1,0 +1,50 @@
+#version: "3.0"
+version: "3.1"
+
+
+intents:
+  - intent_queorders
+  - greet
+  - affirm
+  - deny
+
+entities:
+  - name
+
+slots:
+  makesure:
+    type: bool
+    influence_conversation: True
+    mappings:
+      - type: custom
+
+  name:
+    type: text
+    influence_conversation: True
+    mappings:
+      - entity: name
+        type: from_entity
+
+
+forms:
+  ask_name_form:
+    required_slots:
+      - name
+
+actions:
+  - action_make_sure_yes_or_no
+  - action_start_listen
+
+responses:
+  utter_make_sure:
+    - text: 我需要去人你的姓名信息才可以为你查询，请回答是or不是
+
+
+  utter_ask_name:
+    - text: 请给我你的姓名信息
+
+  utter_thx:
+    - text: 感谢你提供姓名信息
+
+  utter_end:
+    - text: 对话结束

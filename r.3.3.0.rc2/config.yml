@@ -1,0 +1,125 @@
+# The config recipe.
+# https://rasa.com/docs/rasa/model-configuration/
+# The configuration file defines the components and policies that your model will use to make predictions based on user input.
+recipe: default.v1
+language: zh
+
+pipeline:
+  - name: SpacyNLP
+    model: zh_core_web_lg
+    case_sensitive: False  # 表示 hello 和 Hello 相同意思
+
+  - name: SpacyTokenizer
+    token_pattern: None
+
+  - name: SpacyFeaturizer
+    pooling: mean
+  - name: RegexFeaturizer
+    case_sensitive: False
+    use_word_boundaries: False # 配置了 lookup table 时使用
+
+  - name: ResponseSelector  # 分类 FAQ intents
+    epochs: 200
+    retrieval_intent: faq
+
+  #- name: DIETClassifier   # 支持正则特征：做意图分类与实体识别
+    #epochs: 100
+    #constrain_similarities: true
+    #model_confidence: softmax
+
+  - name: DIETClassifier
+    epochs: 1000
+    learning_rate: 0.01
+    embedding_dimension: 256
+    connection_density: 0.3
+    #entity_recognition: False  # only use on intent no entity
+    constrain_similarities: true
+    #model_confidence: softmax
+
+  - name: FallbackClassifier
+    threshold: 0.6
+    ambiguity_threshold: 0.1
+
+## todo want use bert but wrong
+#pipeline:
+#  - name: JiebaTokenizer
+#    #dictionary_path: /mnt/f/mprtModel/mitie_model_and_vocab/dict.chn.txt.big.txt # linux
+#    #dictionary_path: F:\mprtModel\mitie_model_and_vocab\dict.chn.txt.big.txt # windows
+#    #"intent_tokenization_flag": False
+#    #"token_pattern": None
+#
+#
+#  # todo 使用MITIE featurizer必须先配置 MITIE model
+#  #- name: MitieNLP
+#    #model: /mnt/f/mprtModel/mitie_model_and_vocab/total_word_feature_extractor_zh.dat # linux
+#    #model: F:\mprtModel\mitie_model_and_vocab\total_word_feature_extractor_zh.dat # windows
+#  #- name: MitieFeaturizer
+#    #pooling: mean
+#  #- name: MitieIntentClassifier
+#  #- name: MitieEntityExtractor
+#
+#
+#  # todo 直接完成bert模型的加载以完成bert featurizer vector的创建
+#  # todo Bert feature的配置和MITIE/Spacy都不一样，后两者均需要先配置model文件，但是bert直接model+featurizer
+#  - name: LanguageModelFeaturizer
+#    model_name: bert
+#    #model_weights: /home/fzm/prtmodels/bert-base-chinese
+#    model_weights: bert-base-chinese
+#    #model_weights: "/home/fzm/prtmodels/hflchinese-roberta-wwm-ext"
+#    #model_weights: chinese-roberta-wwm-ext
+#    #cache_dir: null
+#
+#  # todo spacy模型的分词器 - model - featurizer的配置
+#  #- name: SpacyTokenizer
+#    #token_pattern: None
+#  #- name: SpacyNLP
+#    #model: zh_core_web_lg
+#    #case_sensitive: False  # 表示 hello 和 Hello 相同意思
+#  #- name: SpacyFeaturizer
+#    #pooling: mean
+#
+#  # todo 抽取正则特征：用于帮助 CRFEntityExtractor 和 DIETClassifier 进行实体抽取以及其他意图分类器
+#  #- name: RegexFeaturizer
+#    #case_sensitive: True
+#    #use_word_boundaries: False # 配置了 lookup table 时使用
+#    #number_additional_patterns: 10 # wait todo 不清楚该配置什么意思
+#
+#  # todo 支持正则特征：做意图分类与实体识别
+#  - name: DIETClassifier
+#    epochs: 200
+#    learning_rate: 0.01
+#    embedding_dimension: 256
+#    connection_density: 0.3
+#    #entity_recognition: False  # only use on intent no entity
+#    constrain_similarities: true
+#    #model_confidence: softmax
+#
+#  - name: FallbackClassifier
+#    threshold: 0.6
+#    ambiguity_threshold: 0.1
+#
+#  # todo 让正则表达式作为规则直接参与实体提取; 需要正则的名称要训练数据中要匹配的实体必须匹配;此组件要想使用，不必须要求RegexFeaturizer组件
+#  #- name: RegexEntityExtractor
+#    #use_regexes: True
+#    #case_sensitive: True
+#    #use_lookup_tables: False
+#    #use_word_boundaries: False
+#
+#  - name: ResponseSelector  # 分类 FAQ intents
+#    epochs: 200
+#    retrieval_intent: faq
+
+
+# Configuration for Rasa Core: https://rasa.com/docs/rasa/core/policies/
+policies:
+  - name: MemoizationPolicy
+  - name: RulePolicy
+    core_fallback_threshold: 0.7  # 以下规则将要求用户在发送低置信度的消息时重新组织句子
+    core_fallback_action_name: action_response_intent_outofscope  # 对于next action的预测处于低置信度的情况要采用的默认的action去对任意一种intent做出回答
+    enable_fallback_prediction: true
+    restrict_rules: true
+    check_for_contradictions: true
+  - name: TEDPolicy
+    max_history: 5
+    epochs: 200
+    constrain_similarities: true

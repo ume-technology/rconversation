@@ -1,0 +1,178 @@
+version: "3.1"
+
+
+stories:
+  - story: do intent_queorders  happy path
+    steps:
+      - intent: intent_queorders
+      - action: action_slot_codes_setter
+      - slot_was_set:
+          - havecode: False
+      - action: ask_codes_form
+      - active_loop: ask_codes_form
+      - active_loop: null
+      - action: action_select_by_code
+      - or:
+          - intent: intent_queorders
+          - intent: intent_express
+      - action: action_ensurecode  # utter_ensurecode
+
+  - story: do intent_queorders  unhappy path
+    steps:
+      - intent: intent_queorders
+      - action: action_slot_codes_setter
+      - slot_was_set:
+          - havecode: False
+      - action: ask_codes_form
+      - active_loop: ask_codes_form
+      - intent: greet
+      - action: action_say_hello # utter_greet
+      - action: action_deactivate_loop
+      - active_loop: null
+
+  - story: do intent_queorders unhappy path
+    steps:
+      - intent: intent_queorders
+      - action: action_slot_codes_setter
+      - slot_was_set:
+          - havecode: True
+      - action: action_select_by_code
+      - or:
+          - intent: intent_queorders
+          - intent: intent_express
+      - action: action_ensurecode  # utter_ensurecode
+
+
+nlu:
+  - intent: intent_queorders
+    examples: |
+      - 核查訂單
+      - 核查订单
+      - 核对订单
+      - 请给我货号
+      - 有查询到吗
+      - 核查订单信息
+      - 能给我货号吗
+      - 我的订单信息
+      - 麻烦帮我查询一下订购有成功吗
+      - 我想要问我订的和美[不沾锅](goods)[锅子](goods)有没有订购成功
+      - 我订购的是一双白色的38号另外一双是黑色的也是38号
+      - 我想请问一下为什么没有看到我的订单
+      - 帮我确认我的订单信息
+      - 核查确认我的订单
+      - 你好我需要确认订单
+      - 小编你好帮我核查订单
+      - 你好我的订单有查到吗
+      - 请问如何确认是否下单成功
+      - 请问是否查询到了我的订单
+      - 请帮我查订单
+      - 你能不能帮我查询一下我的订单
+      - 我的电话号是[123612632173](code)
+      - 可以给我查运单吗[GT7423423](code)
+      - 我的订单是什么电话[1125656](code)
+      - 我找不到我的订单我的电话是[27326232](code)
+      - 我需要查订单我的电话[272323232](code)
+      - 请帮我查订单移动号码[2322672](code)
+      - 帮我查订单移动手机[127827](code)
+      - 我的订单是什么家里电话[23278782](code)
+      - 我的订单是哪个座机[232432](code)
+      - 我的订单是什么情况座机号码[997790](code)
+      - 我的订单好帮我查[456562321](code)
+      - 我想查一下订单信息[GT2305281](code)
+      - 帮我确认我的订单[12565231](code)
+      - 我的订单有成功吗[155622312](code)
+      - 我的订单号码[GT423472342](code)
+      - 帮我查订单[gt3727342423](code)
+      - 我的货号是多少
+      - 请问我的货发走了吗
+      - 你好请帮我查一下我的运单
+      - 拜托帮我确认运单
+      - 我不知道我的货号[32432434](code)怎么样了
+      - 我订购有成功吗
+      - 我找不到[电池](goods)款订单
+      - 已下单[袜子](goods)是否成功
+      - 我有订日本矫正防滑[夹脚拖](goods)女鞋不知道有没有订购成功
+      - 查询订单[7532428934](code)
+      - 我定的商品[7464471851](code)请问查寻进度为什么显示入仓了
+      - 请给我查询我的商品，我的电话是[666666](code)
+      - 能不能查一下我的商品，电话[8888886](code)
+      - 请帮忙确认电话[566556](code)的订单怎么样了
+      - 告诉我电话[08236](code)的订单现在是什么情况
+      - [林哲宏](name)[0983969001](code)44号黑色一咖色一[云林县](city)[斗南镇延平路于满店711](street)共两双1280元对吗
+      - 我订购的是四层两组不要弄错了每一组有四件[蒸杯](goods)的
+      - 你们好我有重新订购贵公司产品pest驱逐蚊子小强老鼠我重新订购的是希望能够成功
+      - 有时候在网络看得到最近找不到就是我订的那一租
+      - 你查不到订单号码你可以帮我订购组谢谢
+      - 请问本人昨天晚上有订油性[万胶](goods)没有订到吗
+      - 抱歉有看到吗我的订单
+      - 我需要查询我的订单
+      - 订单[GT202260629304254](code)查到了吗
+      - 我订成功了吗
+      - 你好请问我有订美白抗皱班吗请回答
+      - 你好我有跟你们订这产品
+      - 我记得我买了美白[牙贴](goods)跟[眉笔](goods)
+      - 我49下午四点有订成功绿茶控油清洁固体[面膜](goods)
+      - 如果有看到我刚才没发出的订单不要重复哟
+      - 你好有看到我的订单吗
+      - 不要弄错了
+      - 订单不要弄错了
+      - 已有订购[帽子](goods)不知道是否颜色可不一样
+      - 我是否有订购货未来哪里可查询
+      - 我想请问有一个[0926146905](code)[黄荣华](name)的订单是否有成立
+      - 目前只保留一单[GT204121503148082](code)雾蓝色和黑色各一880元的
+      - 我订购的撕拉[面膜](goods)是699]吗[0977301123](code)[贾哓红](name)
+      - 查询不到我的订单想麻烦您帮我查询一下再请您告知谢谢您
+      - 您好我是[吴慧芳](name)电话[0983158596](code)刚才有在线上向贵公司订购[沐浴乳](goods)9瓶套装组前几天也订购了[沐浴衣](goods)2件
+      - 你好有看到我的订单吗我订的是美国第1代可脱缷式美白[牙套](goods)
+      - 不知订单号码没截图
+      - 是否可以给我货号呢能给我货号吗是新竹客运送来的吗
+      - 请问有订购商品如何查询
+      - 小编你好请问本人有订购成功吗请回赖订购品号给我好吗
+      - 这账号有购买成功吗
+      - 我是不是有在你们网站上购买东西
+      - 可以告诉我正确的数量和地址
+      - 因为这是没有登记会员的所以我查找不到所有的记录希望你帮我查查我只需要一张单3只[鞋子](goods)
+      - 我找不到[电池](goods)款订单
+      - 可以帮我查一下吗
+      - 不好意思你可以在帮我查一下吗
+      - 我下单成功了吗
+      - 请问我的订单出货几笔
+      - 一组有几罐恳请告知麻烦你们晚一点立刻去领取货
+      - 已下单[袜子](goods)是否成功
+      - 你没办法查到我的订单吗[0961368966](code)[陈阡郁](name)
+      - 我的新订单用[林聿蓁](name)的名字
+      - 请问这订单是否确
+      - 有订单编号吗
+      - 订单编号及出货号码请告知
+      - 我有订日本矫正防滑[夹脚拖](goods)女鞋不知道有没有订购成功
+      - 订单都不帮我处理吗
+
+
+
+
+#rules:
+#  - rule: user give code to ask order status
+#    steps:
+#      - intent: intent_queorders
+#      - action: action_slot_codes_setter
+#      - slot_was_set:
+#          - havecode: True
+#      - action: action_select_by_code
+#
+#  - rule: user not give code to ask order status ACTIVE form
+#    steps:
+#      - intent: intent_queorders
+#      - action: action_slot_codes_setter
+#      - slot_was_set:
+#          - havecode: False
+#      - action: ask_codes_form
+#      - active_loop: ask_codes_form
+#  - rule: user not give code to ask order status  SUBMIT  code form
+#    condition:
+#      - active_loop: ask_codes_form
+#    steps:
+#      - action: ask_codes_form
+#      - active_loop: null
+#      - slot_was_set:
+#          - requested_slot: null
+#      - action: action_select_by_code

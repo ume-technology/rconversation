@@ -1,0 +1,69 @@
+version: "3.1"
+
+rules:
+  - rule: user give code to ask order status
+    steps:
+      - intent: intent_queorders
+      - action: action_slot_codes_setter
+      - slot_was_set:
+          - havecode: True
+      - action: action_select_by_code
+
+  - rule: user not give code to ask order status ACTIVE form
+    steps:
+      - intent: intent_queorders
+      - action: action_slot_codes_setter
+      - slot_was_set:
+          - havecode: False
+      - action: ask_codes_form
+      - active_loop: ask_codes_form
+  - rule: user not give code to ask order status  SUBMIT  code form
+    condition:
+      - active_loop: ask_codes_form
+    steps:
+      - action: ask_codes_form
+      - active_loop: null
+      - slot_was_set:
+          - requested_slot: null
+      - action: action_select_by_code
+
+#stories:
+#  - story: do intent_queorders  happy path
+#    steps:
+#      - intent: intent_queorders
+#      - action: action_slot_codes_setter
+#      - slot_was_set:
+#          - havecode: False
+#      - action: ask_codes_form
+#      - active_loop: ask_codes_form
+#      - active_loop: null
+#      - action: action_select_by_code
+#      - or:
+#          - intent: intent_queorders
+#          - intent: intent_express
+#      - action: action_ensurecode  # utter_ensurecode
+#
+#  - story: do intent_queorders  unhappy path
+#    steps:
+#      - intent: intent_queorders
+#      - action: action_slot_codes_setter
+#      - slot_was_set:
+#          - havecode: False
+#      - action: ask_codes_form
+#      - active_loop: ask_codes_form
+#      - intent: greet
+#      - action: action_say_hello # utter_greet
+#      - action: action_deactivate_loop
+#      - active_loop: null
+#
+#  - story: do intent_queorders unhappy path
+#    steps:
+#      - intent: intent_queorders
+#      - action: action_slot_codes_setter
+#      - slot_was_set:
+#          - havecode: True
+#      - action: action_select_by_code
+#      - or:
+#          - intent: intent_queorders
+#          - intent: intent_express
+#      - action: action_ensurecode  # utter_ensurecode
