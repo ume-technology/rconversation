@@ -1,6 +1,7 @@
 # The config recipe.
 # https://rasa.com/docs/rasa/model-configuration/
-# The configuration file defines the components and policies that your model will use to make predictions based on user input.
+# The configuration file defines the components and policies
+# that your model will use to make predictions based on user input.
 recipe: default.v1
 language: zh
 
